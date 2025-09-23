@@ -2,8 +2,8 @@ import discord
 from discord.ext import commands
 import yt_dlp
 import os
+import imageio_ffmpeg
 
-# ตั้งค่า intents
 intents = discord.Intents.default()
 bot = commands.Bot(command_prefix="!", intents=intents)
 
@@ -11,9 +11,11 @@ bot = commands.Bot(command_prefix="!", intents=intents)
 DOWNLOAD_DIR = "./downloads"
 os.makedirs(DOWNLOAD_DIR, exist_ok=True)
 
-# กำหนด User ID ที่อนุญาต (1 คนเท่านั้น)
-ALLOWED_USER = 1147798918973898762  # แก้เป็น Discord User ID ของคุณ
+# ffmpeg แบบพกพา
+FFMPEG_PATH = imageio_ffmpeg.get_ffmpeg_exe()
 
+# กำหนด User ID ที่อนุญาต (1 คน)
+ALLOWED_USER = 123456789012345678  # 👈 แก้เป็น Discord User ID ของคุณ
 
 # ฟอร์ม Modal
 class YTModal(discord.ui.Modal):
@@ -27,10 +29,10 @@ class YTModal(discord.ui.Modal):
         await interaction.response.send_message("🎵 กำลังโหลดและแปลงเป็น MP3 ...", ephemeral=True)
 
         try:
-            # ตั้งค่า yt-dlp
             ydl_opts = {
                 "format": "bestaudio/best",
                 "outtmpl": f"{DOWNLOAD_DIR}/%(title)s.%(ext)s",
+                "ffmpeg_location": FFMPEG_PATH,
                 "postprocessors": [{
                     "key": "FFmpegExtractAudio",
                     "preferredcodec": "mp3",
@@ -43,17 +45,13 @@ class YTModal(discord.ui.Modal):
                 filename = ydl.prepare_filename(info)
                 filename = filename.rsplit(".", 1)[0] + ".mp3"
 
-            # ส่งไฟล์กลับไปที่ห้องที่ใช้คำสั่ง
             await self.channel.send(file=discord.File(filename))
-
-            # ลบไฟล์ออกหลังส่งเสร็จ
             os.remove(filename)
 
         except Exception as e:
             await self.channel.send(f"❌ Error: {e}")
 
 
-# Slash Command
 @bot.slash_command(name="ytmp3", description="แปลง YouTube เป็น MP3")
 async def ytmp3(ctx: discord.ApplicationContext):
     if ctx.author.id != ALLOWED_USER:
@@ -64,5 +62,4 @@ async def ytmp3(ctx: discord.ApplicationContext):
     await ctx.send_modal(modal)
 
 
-# รันบอท (Render จะใส่ Token ใน Environment Variable)
 bot.run(os.getenv("DISCORD_TOKEN"))
