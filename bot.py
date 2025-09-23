@@ -12,7 +12,7 @@ DOWNLOAD_DIR = "./downloads"
 os.makedirs(DOWNLOAD_DIR, exist_ok=True)
 
 # กำหนด User ID ที่อนุญาต (1 คนเท่านั้น)
-ALLOWED_USER = 123456789012345678  # แก้เป็น Discord User ID ของคุณ
+ALLOWED_USER = 1147798918973898762  # แก้เป็น Discord User ID ของคุณ
 
 
 # ฟอร์ม Modal
