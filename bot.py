@@ -15,7 +15,7 @@ os.makedirs(DOWNLOAD_DIR, exist_ok=True)
 FFMPEG_PATH = imageio_ffmpeg.get_ffmpeg_exe()
 
 # กำหนด User ID ที่อนุญาต (1 คน)
-ALLOWED_USER = 123456789012345678  # 👈 แก้เป็น Discord User ID ของคุณ
+ALLOWED_USER = 1147798918973898762  # 👈 แก้เป็น Discord User ID ของคุณ
 
 # ฟอร์ม Modal
 class YTModal(discord.ui.Modal):
